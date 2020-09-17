@@ -374,11 +374,11 @@ admin.site.register(TestUser)
 
 __ok.html 실행 결과__
 
-![실습1](C:\Users\KIMKYOUNLIN\TIL\django_til\django_0917.assets\실습1.PNG)
+![](C:\Users\KIMKYOUNLIN\TIL\django_til\django_0917.assets\실습1-1600349283462.PNG)
 
 __index.html 실행 결과__
 
-![실습2](C:\Users\KIMKYOUNLIN\TIL\django_til\django_0917.assets\실습2.PNG)
+![](C:\Users\KIMKYOUNLIN\TIL\django_til\django_0917.assets\실습2-1600349294357.PNG)
 
 __success.html 실행 결과__
 
@@ -394,19 +394,19 @@ index 웹에서 로그인을 한 결과
 
 __생성한 아이디 비번을 통해 들어갔을때 나오는 화면__
 
-![실습3](C:\Users\KIMKYOUNLIN\TIL\django_til\django_0917.assets\실습3.PNG)
+![](C:\Users\KIMKYOUNLIN\TIL\django_til\django_0917.assets\실습3-1600349314338.PNG)
 
 
 
 __success에 들어가기 위한 아이디 비밀번호 생성 __
 
-![실습4](C:\Users\KIMKYOUNLIN\TIL\django_til\django_0917.assets\실습4.PNG)
+![](C:\Users\KIMKYOUNLIN\TIL\django_til\django_0917.assets\실습4-1600349329510.PNG)
 
 
 
 __index에서 로그인 성공후 나오는 웹 화면 __
 
-![실습5](C:\Users\KIMKYOUNLIN\TIL\django_til\django_0917.assets\실습5.PNG)
+![](C:\Users\KIMKYOUNLIN\TIL\django_til\django_0917.assets\실습5-1600349341773.PNG)
 
 ## 실습 후 소감
 
