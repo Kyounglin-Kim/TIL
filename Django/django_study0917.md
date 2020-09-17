@@ -20,7 +20,11 @@
 
 
 
-![장고](C:\Users\KIMKYOUNLIN\TIL\Django\django_study0917.assets\장고.PNG)
+![장고](/django_study0917.assets/장고.PNG)
+
+
+
+
 
 View : URL conf -> View
 
@@ -85,7 +89,13 @@ templates
 
 ##### 어플생성 - python manage.py startapp greetingApp
 
-![파일생성](C:\Users\KIMKYOUNLIN\TIL\Django\django_study0917.assets\파일생성.PNG)
+![파일생성](/django_study0917.assets/파일생성.PNG)
+
+
+
+
+
+
 
 프로젝트, python 파일, html 파일 생성하기
 
@@ -364,11 +374,15 @@ admin.site.register(TestUser)
 
 __ok.html 실행 결과__
 
-![실습1](C:\Users\KIMKYOUNLIN\TIL\Django\django_study0917.assets\실습1.PNG)
+![실습1](/django_study0917.assets/실습1.PNG)
+
+
 
 __index.html 실행 결과__
 
-![실습2](C:\Users\KIMKYOUNLIN\TIL\Django\django_study0917.assets\실습2.PNG)
+![실습2](/django_study0917.assets/실습2.PNG)
+
+
 
 __success.html 실행 결과__
 
@@ -384,15 +398,21 @@ index 웹에서 로그인을 한 결과
 
 __생성한 아이디 비번을 통해 들어갔을때 나오는 화면__
 
-![실습3](C:\Users\KIMKYOUNLIN\TIL\Django\django_study0917.assets\실습3.PNG)
+![실습3](/django_study0917.assets/실습3.PNG)
+
+
 
 __success에 들어가기 위한 아이디 비밀번호 생성 __
 
-![실습4](C:\Users\KIMKYOUNLIN\TIL\Django\django_study0917.assets\실습4.PNG)
+![실습4](/django_study0917.assets/실습4.PNG)
+
+
 
 __index에서 로그인 성공후 나오는 웹 화면 __
 
-![실습5](C:\Users\KIMKYOUNLIN\TIL\Django\django_study0917.assets\실습5.PNG)
+![실습5](/django_study0917.assets/실습5.PNG)
+
+
 
 ## 실습 후 소감
 
