@@ -20,7 +20,7 @@
 
 
 
-![장고](C:\Users\KIMKYOUNLIN\TIL\Django\django_study0917.assets\장고.png)
+![장고](C:\Users\KIMKYOUNLIN\TIL\Django\django_study0917.assets\장고.PNG)
 
 View : URL conf -> View
 
