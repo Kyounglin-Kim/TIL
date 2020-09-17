@@ -374,7 +374,7 @@ admin.site.register(TestUser)
 
 __ok.html 실행 결과__
 
-![사진1](C:\Users\KIMKYOUNLIN\TIL\django_til\django_0917.assets\사진1.PNG)
+![실습1](C:\Users\KIMKYOUNLIN\TIL\django_til\django_0917.assets\실습1.PNG)
 
 __index.html 실행 결과__
 
@@ -406,9 +406,7 @@ __success에 들어가기 위한 아이디 비밀번호 생성 __
 
 __index에서 로그인 성공후 나오는 웹 화면 __
 
-![실습6](C:\Users\KIMKYOUNLIN\TIL\django_til\django_0917.assets\실습6.PNG)
-
-
+![실습5](C:\Users\KIMKYOUNLIN\TIL\django_til\django_0917.assets\실습5.PNG)
 
 ## 실습 후 소감
 
