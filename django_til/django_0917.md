@@ -1,5 +1,9 @@
 # django
 
+2020-09-17
+
+위 실습은 `파이참` 프로그램을 통해 학습한 내용입니다.
+
 
 
 ## MVT 패턴이란
@@ -83,7 +87,17 @@ templates
 
 ## 실습 
 
+먼저 `django` 패키지를 설치해야한다.
+
 ##### 어플생성 - python manage.py startapp greetingApp
+
+<img src="C:\Users\KIMKYOUNLIN\TIL\django_til\django기초_0917.assets\make.PNG">
+
+
+
+프로젝트, python 파일, html 파일 생성하기
+
+`python참 코딩` 
 
 1) settings.py
 
@@ -216,9 +230,183 @@ STATIC_URL = '/static/'
 
 
 
+2) djangoWEB\urls.py
+
+```python
+from django.contrib import admin
+from django.urls import path, include # include 함수 불러오기
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('hello/', include('helloApp.urls'))
+]
+```
+
+3) helloApp\urls.py
+
+```python
+from django.contrib import admin
+from django.urls import path, include
+from helloApp import views
+
+urlpatterns = [
+    path('index/', views.index),
+    path('hi/', views.hi),
+    path('login/', views.login, name='login')
+]
+```
+
+4) views.py 
+
+```python
+from django.shortcuts import render, HttpResponse
+from .models import *
+
+# Create your views here.
+
+def index(request):
+    #return HttpResponse('<div align=center> 섭이와 함께하는 Django WEB Framework</div>')
+    return render(request, 'hello/index.html')
+
+def hi(request) :
+    context = {'ment' : '여기까지 잘 되시나요? 쉬는시간 가질까요? ^*^'}
+    return render(request , 'hello/ok.html', context)
+
+# post 방식과 get 방식이 존재 post는 주소창에 내가 입력한 id/pwd가 나오지 않음
+def login(request):
+    if request.method == 'POST': 
+        id = request.POST['id']
+        pwd = request.POST['pwd']
+
+
+        user = TestUser.objects.get(user_id = id)
+        context = {}
+        if user is not None :
+            #print(user.user_id, user.user_pwd, user.user_name)
+            context['user'] = user
+        return render(request, 'hello/success.html', context)
+
+
+        #context = {'id' : id , 'pwd' : pwd}
+        #return render(request, 'hello/success.html', context)
+```
+
+5) models.py
+
+```python
+from django.db import models
+
+# Create your models here.
+
+class TestUser(models.Model) :
+    user_id = models.CharField(max_length=50)
+    user_pwd = models.CharField(max_length=50)
+    user_name = models.CharField(max_length=50)
+
+```
+
+6) admin.py
+
+```python
+from django.contrib import admin
+from .models import *
+# Register your models here.
+
+admin.site.register(TestUser)
+```
+
+7) ok.html
+
+```python
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<center><font color = "pink"> {{ment}}</font></center>
+</body>
+</html>
+```
+
+8) index.html
+
+```python
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <center>NAVER</center>
+    <div align="right">
+        <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+        <label>아이디</label> <input type="text" name="id" />
+        <label>패스워드</label> <input type="password" name="pwd" />
+        <input type = 'submit' value="LOGIN">
+        </form>
+    </div>
+</body>
+</html>
+```
+
+9) success.html -> 로그인을 했을 때 나타나는 웹 페이지
+
+```python
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{{user.user_id}} 이고 {{user.user_pwd}} 이며 {{user.user_name}} 입니다~~~
+</body>
+</html>
+```
 
 
 
+## 실행 결과
+
+__ok.html 실행 결과__
+
+![](C:\Users\KIMKYOUNLIN\TIL\django_til\django기초_0917.assets\실습 2.PNG)
+
+__index.html 실행 결과__
+
+![](C:\Users\KIMKYOUNLIN\TIL\django_til\django기초_0917.assets\실습1.PNG)
+
+__success.html 실행 결과__
+
+index 웹에서 로그인을 한 결과 
+
+> python manage.py makemigrations # 모델을 통해 테이블 생성
+>
+> python manage.py migrate  # 실행 후 -> 아이디 및 패스워드 생성 
+>
+> python manage.py createsuperuser
+
+
+
+__생성한 아이디 비번을 통해 들어갔을때 나오는 화면__
+
+![](C:\Users\KIMKYOUNLIN\TIL\django_til\django기초_0917.assets\실습4.PNG)
+
+__success에 들어가기 위한 아이디 비밀번호 생성 __
+
+![](C:\Users\KIMKYOUNLIN\TIL\django_til\django기초_0917.assets\실습5.PNG)
+
+__index에서 로그인 성공후 나오는 웹 화면 __
+
+![](C:\Users\KIMKYOUNLIN\TIL\django_til\django기초_0917.assets\실습6.PNG)
+
+## 실습 후 소감
+
+장고 첫 수업이라 정신이 하나도 없고 환경셋팅 자체도 힘들어서 정신이 없는 하루였지만, 조금씩 하다보면 장고에 대해 이해할 수 있을 거라 믿고 앞으로 열심히 수업듣고 이렇게 복습하고 1일 1commit 이상을 하도록 노력해야겠습니다.
 
 
 
