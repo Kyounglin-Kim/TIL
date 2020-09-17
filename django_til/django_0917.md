@@ -374,11 +374,11 @@ admin.site.register(TestUser)
 
 __ok.html 실행 결과__
 
-![](./img/사진1.png)
+![실습1](./img/사진1.png)
 
 __index.html 실행 결과__
 
-![](./img/실습2.png)
+![실습2](./img/실습2.png)
 
 __success.html 실행 결과__
 
@@ -394,17 +394,23 @@ index 웹에서 로그인을 한 결과
 
 __생성한 아이디 비번을 통해 들어갔을때 나오는 화면__
 
-![](./img/실습3.png)
+![살습3](./img/실습3.png)
+
+
 
 __success에 들어가기 위한 아이디 비밀번호 생성 __
 
-![](./img/실습4.png)
+![실습4](./img/실습4.png)
+
+
 
 
 
 __index에서 로그인 성공후 나오는 웹 화면 __
 
-![](./img/실습6.png)
+![실습5](./img/실습6.png)
+
+
 
 
 
