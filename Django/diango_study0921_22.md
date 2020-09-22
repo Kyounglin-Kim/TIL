@@ -521,11 +521,11 @@ header와 footer.html을 제공받아 웹 사이트를 만들었다. 오늘 한 
 
 마지막으로 게시글 작성자가 게시글을 삭제하는 작업을 했다.
 
-![](C:\Users\KIMKYOUNLIN\TIL\Django\diango_study0921.assets\실습1.PNG)
+![](./img0922/실습1.png)
 
 저기서 viewcnt는 게시글을 조회할때마다 하나씩 증가한다.
 
-![](C:\Users\KIMKYOUNLIN\TIL\Django\diango_study0921.assets\실습2.PNG)
+![](./img0922/실습2.png)
 
 게시글을 올린 사람이 글을 확인할때 remove 버튼을 통해 삭제가 가능하다.
 
