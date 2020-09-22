@@ -18,7 +18,7 @@ urls 랑 views랑 템플릿 html 문서들 왔다갔다 하면서 데이터를 �
 
 
 
-![실습18_7](C:\Users\KIMKYOUNLIN\Desktop\django_study0918.assets\실습18_7.PNG)
+![실습1](./img/실습1_0918.PNG)
 
 ____
 
@@ -194,11 +194,11 @@ admin.site.register(Choice) # 2개의 모델을 추가시켜줘야한다.
 >
 > python manage,py 
 
-![실습17_1](C:\Users\KIMKYOUNLIN\Desktop\django_study0918.assets\실습17_1.PNG)
+![실습2](./img/실습2_0918.PNG)
 
 
 
-![실습18_2](C:\Users\KIMKYOUNLIN\Desktop\django_study0918.assets\실습18_2-1600394594339.PNG)
+![실습3](./img/실습3_0918.PNG)
 
 * `templates`라는 프로젝트 생성 후 어플관련 프로젝트 polls 생성하기
 
@@ -288,15 +288,15 @@ __result.html__
 
 1. 질문 리스트 및 투표와 링크연결
 
-![실습18_5]()![실습18_4](C:\Users\KIMKYOUNLIN\Desktop\django_study0918.assets\실습18_4-1600417443805.PNG)
+![실습4](./img/실습4_0918.PNG)
 
 2. 질문에 대한 투표 생성
 
-![실습18_5](C:\Users\KIMKYOUNLIN\Desktop\django_study0918.assets\실습18_5-1600417463015.PNG)
+![실습5](./img/실습5_0918.PNG)
 
 3. 투표 할 때마다 투표수가 증가되게 표현
 
-![실습18_6](C:\Users\KIMKYOUNLIN\Desktop\django_study0918.assets\실습18_6.PNG)
+![실습6](./img/실습6_0918.PNG)
 
 
 

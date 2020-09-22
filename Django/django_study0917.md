@@ -20,7 +20,9 @@
 
 
 
-![장고](C:\Users\KIMKYOUNLIN\TIL\Django\django_study0917.assets\장고.png)
+![장고](./img/장고_0917.PNG)
+
+
 
 View : URL conf -> View
 
@@ -85,9 +87,7 @@ templates
 
 ##### 어플생성 - python manage.py startapp greetingApp
 
-![파일생성](C:\Users\KIMKYOUNLIN\TIL\Django\django_study0917.assets\파일생성.PNG)
-
-
+![파일생성](./img/파일생성_0917.PNG)
 
 
 
@@ -370,13 +370,13 @@ admin.site.register(TestUser)
 
 __ok.html 실행 결과__
 
-![실습1](C:\Users\KIMKYOUNLIN\TIL\Django\django_study0917.assets\실습1.PNG)
+![실습1](./img/실습1_0917.PNG)
 
 
 
 __index.html 실행 결과__
 
-![실습2](C:\Users\KIMKYOUNLIN\TIL\Django\django_study0917.assets\실습2.PNG)
+![실습2](./img/실습2_0917.PNG)
 
 
 
@@ -394,23 +394,19 @@ index 웹에서 로그인을 한 결과
 
 __생성한 아이디 비번을 통해 들어갔을때 나오는 화면__
 
-![실습3](C:\Users\KIMKYOUNLIN\TIL\Django\django_study0917.assets\실습3.PNG)
-
-
+![실습3](./img/실습3_0917.PNG)
 
 
 
 __success에 들어가기 위한 아이디 비밀번호 생성 __
 
-![실습4](C:\Users\KIMKYOUNLIN\TIL\Django\django_study0917.assets\실습4.PNG)
-
-
+![실습4](./img/실습4_0917.PNG)
 
 
 
 __index에서 로그인 성공후 나오는 웹 화면 __
 
-![실습5](C:\Users\KIMKYOUNLIN\TIL\Django\django_study0917.assets\실습5.PNG)
+![실습5](./img/실습5_0917.PNG)
 
 
 
