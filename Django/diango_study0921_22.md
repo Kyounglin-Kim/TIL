@@ -1,10 +1,12 @@
 # diango
 
-2020-09-21
+2020-09-21 ~ 09-22
 
 [학습내용]
 
 모델에서 Bbs클래스라는 데이터베이스 테이블을 생성한 뒤 관리자페이지에서 이 테이블에 데이터를 추가하고 데이터를 모델에서 view로 옮겨 templates에 있는 html을 통해 출력해서 보여주는 활동을 했다.
+
+게시판의 글을 몇명이 봤는지에 대한 viewcnt와 TITLE 제목에 url을 연결하여 게시판의 내용을 볼 수 있게하고 마지막으로 게시판을 쓴 작성자가 게시글이 마음에 들지 않을때 삭제 할 수 있게 만들어주는 버튼을 생성하는 하는 내용을 배웠다.
 
 ------
 
@@ -104,6 +106,7 @@ from django.contrib import admin
 from django.urls import path, include
 from BbsApp import views
 
+# path의 첫번째는 url경로
 urlpatterns = [
     path('index/', views.loginForm,name='loginForm'), # view-> urls에 들어온 리퀘스를 로직을 처리하는곳
     path('registerForm/', views.registerForm, name='registerForm'),
@@ -111,6 +114,10 @@ urlpatterns = [
     path('login/', views.login, name='login'),
     path('logout/', views.logout, name='logout'),
     path('bbs_list/', views.list, name='bbs_list'),
+    path('bbs_registerForm/', views.bbsRegisterForm, name = 'bbs_registerForm'),
+    path('bbs_register/', views.bbsRegister , name = 'bbs_register'),
+    path('bbs_read/<int:id>', views.bbsRead, name='bbs_read'), #<int:id>는 list에 적용한 값과 int값이 동일해야한다. // GET방식
+    path('bbs_remove/', views.bbsRemove, name='bbs_remove'),
 
 ]
 ```
@@ -183,6 +190,50 @@ def list(request):
     context = {'boards': boards}
     return render(request, 'list.html',context) # 템플릿으로 가겠다 맨 오른쪽에 데이터를 심는다
 
+# 리스트가 header와 footer에 심어져 있기때문에 이렇게 정보를 심으면 적용이 가능해 진다.
+
+def bbsRegisterForm(request):
+    context = {'name' : request.session['user_name'],
+               'id' : request.session['user_id']}
+    return render(request, 'bbsRegisterForm.html',context)
+
+
+def bbsRegister(request):
+    if request.method == 'GET':
+        return redirect('bbs_registerForm')
+    elif request.method == 'POST':
+        title = request.POST['title']
+        content = request.POST['content']
+        writer = request.POST['writer']
+
+        board=Bbs(title = title, content = content, writer = writer)
+        board.save()
+    return redirect('bbs_list') # render는 템플릿이기 때문에 데이터를 가져올수 없음
+
+
+def bbsRead(request,id): # get에서 가져오는 값도 적용해야함
+    # print('param - ', id)
+    # model과 작업을 필요로하게 된다.
+    bbs = Bbs.objects.get(id=id)
+    # viewcnt update
+    bbs.viewcnt = bbs.viewcnt + 1
+    bbs.save()
+
+    context = {'bbs': bbs ,
+               'name': request.session['user_name'],
+               'id': request.session['user_id']}
+
+    return render(request,'read.html',context)
+
+
+def bbsRemove(request):
+    id = request.POST['id']
+    #delet from table where id = id;
+    board = Bbs.objects.get(id=id)
+    board.delete()
+    return redirect('bbs_list')
+
+
 ```
 
 __templates__ 
@@ -204,7 +255,9 @@ __templates__
 
 ```
 
-ex) __list.html__
+#### templates의 html 파일들 예시
+
+ __list.html__
 
 ```html
 <!-- list는 body만 가지고 있다 그러므로 header랑 footer를 붙이는 작업이 필요하다 -->
@@ -290,18 +343,201 @@ ex) __list.html__
 {% include 'footer.html' %}
 ```
 
+__bbsRegisterForm.html__
+
+```html
+<!-- list는 body만 가지고 있다 그러므로 header랑 footer를 붙이는 작업이 필요하다 -->
+<!-- 화면이 깨지는 것을 막기 위해 블럭을 해주어야 한다. include block ~ endblock include-->
+<!-- css 방식 -->
+
+
+{% include 'header.html' %}
+{% block content %}
+
+
+
+
+<!-- Main content -->
+<section class="content">
+	<div class="row">
+		<!-- left column -->
+		<div class="col-md-12">
+			<!-- general form elements -->
+			<div class="box box-primary">
+				<div class="box-header">
+					<h3 class="box-title">REGISTER BOARD</h3>
+				</div>
+				<!-- /.box-header -->
+
+<form role="form" method="post" action="{% url 'bbs_register' %}">
+	<!--사용자가 버튼을 누르면 bbsRegister path로 연결-->
+	{% csrf_token %} <!--POST이므로 보안 필요 -->
+   
+<!--데이터를 입력하면 db에 저장되는 작업을 해야한다. -->
+	<div class="box-body">
+		<div class="form-group">
+			<label for="exampleInputEmail1">Title</label> 
+			<input type="text"
+				name='title' class="form-control" placeholder="Enter Title">
+		</div>
+		<div class="form-group">
+			<label for="exampleInputPassword1">Content</label>
+			<textarea class="form-control" name="content" rows="3"
+				placeholder="Enter ..."></textarea>
+		</div>
+		<div class="form-group">
+			<label for="exampleInputEmail1">Writer</label> 
+			<input type="text"
+				name="writer" class="form-control" readonly value="{{id}}"> <!--id session 값을 가져오겠다-->
+
+		</div>
+	</div>
+	<!-- /.box-body -->
+
+	<div class="box-footer">
+		<button type="submit" class="btn btn-primary">Submit</button>
+	</div>
+</form>
+
+
+			</div>
+			<!-- /.box -->
+		</div>
+		<!--/.col (left) -->
+
+	</div>
+	<!-- /.row -->
+</section>
+<!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+
+
+
+{% endblock %}
+{% include 'footer.html' %}
+
+```
+
+
+
+__read.html__
+
+```html
+{% include 'header.html' %}
+{% block content %}
+
+
+<!-- Main content -->
+<section class="content">
+	<div class="row">
+		<!-- left column -->
+		<div class="col-md-12">
+			<!-- general form elements -->
+			<div class="box box-primary">
+				<div class="box-header">
+					<h3 class="box-title">READ BOARD</h3>
+				</div>
+				<!-- /.box-header -->
+
+<form role="form" method="post" id="removeFrm">
+	{% csrf_token %}
+	
+	<input type='hidden' name='id' value="{{bbs.id}}">
+
+</form>
+
+<div class="box-body">
+	<div class="form-group">
+		<label for="exampleInputEmail1">Title</label> <input type="text"
+			name='title' class="form-control" value="{{bbs.title}}"
+			readonly="readonly">
+	</div>
+	<div class="form-group">
+		<label for="exampleInputPassword1">Content</label>
+		<textarea class="form-control" name="content" rows="3"
+			readonly="readonly">{{bbs.content}}</textarea>
+	</div>
+	<div class="form-group">
+		<label for="exampleInputEmail1">Writer</label> <input type="text"
+			name="writer" class="form-control" value="{{bbs.writer}}"
+			readonly="readonly">
+	</div>
+</div>
+<!-- /.box-body -->
+
+<div class="box-footer">
+	{% if id == bbs.writer %}
+	<button type = "submit" class="btn btn-warning">Modify</button>
+	<button type = "submit" class="btn btn-danger">Remove</button>
+	{% endif %}
+	<button id = "listBtn" type="submit" class="btn btn-primary">LIST ALL</button>
+</div>
+
+
+
+<!--#은 불러오는 거  즉 버튼을 불러온다는 뜻 -->
+				<!--#removeFrm은 submit을 생성시키기 위한 버튼..?  -->
+<script>
+
+$(document).ready(function(){
+	$('#listBtn').click(function() {
+		location.href = '../bbs_list';
+	})
+	$('.btn-danger').click(function(){
+		$('#removeFrm').attr('action', '../bbs_remove/');
+		$('#removeFrm').submit();
+
+	})
+});
+
+
+</script>
+
+
+			</div>
+			<!-- /.box -->
+		</div>
+		<!--/.col (left) -->
+
+	</div>
+	<!-- /.row -->
+</section>
+<!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+
+{% endblock %}
+{% include 'footer.html' %}
+```
+
 
 
 __실습 결과 __
 
 header와 footer.html을 제공받아 웹 사이트를 만들었다. 오늘 한 내용은 Dashboard 게시판에 관리자계정에서 입력한 데이터를 나타내는 작업을 했다.
 
-![](C:\Users\KIMKYOUNLIN\TIL\Django\diango_study0921.assets\study0921_1.PNG)
+게시글을 작성하고 작성한 글을 url을 통해 연결하여 확인하는 작업
 
+마지막으로 게시글 작성자가 게시글을 삭제하는 작업을 했다.
 
+![](C:\Users\KIMKYOUNLIN\TIL\Django\diango_study0921.assets\실습1.PNG)
+
+저기서 viewcnt는 게시글을 조회할때마다 하나씩 증가한다.
+
+![](C:\Users\KIMKYOUNLIN\TIL\Django\diango_study0921.assets\실습2.PNG)
+
+게시글을 올린 사람이 글을 확인할때 remove 버튼을 통해 삭제가 가능하다.
 
 
 
 ### 실습 후 소감
 
+>2020-09-22
+>
 >오늘 배운 내용이 완벽하게 이해된것은 아니지만 약간의 흐름이 3일째가 되는 오늘 조금씩 이해가 되는 기분이 든다.  Diango책을 통해 스스로 공부하여 html에 대해 이해하는 시간이 필요한것 같다.
+>
+>2020-09-23
+>
+>오늘은 어제 실습에 더해 추가적으로 웹을 구성하는 것을 배웠다. 확실히 하루하루 지날수록 혼자서 실습을 조금이지만 할 수 있게 되었다. 
+
