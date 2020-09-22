@@ -513,7 +513,7 @@ $(document).ready(function(){
 
 
 
-#### 실습 결과
+__실습 결과 __
 
 header와 footer.html을 제공받아 웹 사이트를 만들었다. 오늘 한 내용은 Dashboard 게시판에 관리자계정에서 입력한 데이터를 나타내는 작업을 했다.
 
