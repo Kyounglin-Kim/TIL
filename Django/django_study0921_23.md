@@ -1,6 +1,6 @@
 # django
 
-2020-09-21 ~ 09-22
+2020-09-21 ~ 09-23
 
 [학습내용]
 
@@ -8,7 +8,13 @@
 
 게시판의 글을 몇명이 봤는지에 대한 viewcnt와 TITLE 제목에 url을 연결하여 게시판의 내용을 볼 수 있게하고 마지막으로 게시판을 쓴 작성자가 게시글이 마음에 들지 않을때 삭제 할 수 있게 만들어주는 버튼을 생성하는 하는 내용을 배웠다.
 
-------
+
+
+자기가 쓴 게시글에 대해 수정이 가능하도록 update 모델을 만들어 사용했다.
+
+BoardList 작성해서 search Board가  가능하게 만들어주는 작업을 했다. 검색을 통해 게시판 목록을 찾을수 있게 만드는 작업을 했다. 
+
+------------------------------------------------------------------------------
 
 
 
@@ -120,6 +126,9 @@ urlpatterns = [
     path('bbs_register/', views.bbsRegister , name = 'bbs_register'),
     path('bbs_read/<int:id>', views.bbsRead, name='bbs_read'), #<int:id>는 list에 적용한 값과 int값이 동일해야한다. // GET방식
     path('bbs_remove/', views.bbsRemove, name='bbs_remove'),
+    path('bbs_modifyForm/', views.bbsmodifyForm, name='bbs_modifyForm'),
+    path('bbs_modify/', views.bbsmodify, name='bbs_modify'),
+    path('bbs_search/', views.bbsSearch, name='bbs_search'),
 
 ]
 ```
@@ -135,6 +144,7 @@ __views.py__
 - session에 심어서 데이터 사용범위를 모든 템플릿에서 사용할 수 있는 데이터로 저장해야 한다.
 
 ```python
+import json
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 
@@ -207,7 +217,7 @@ def bbsRegister(request):
         title = request.POST['title']
         content = request.POST['content']
         writer = request.POST['writer']
-
+		 # insert into 데이터가 없는 상태에서 가져오는 작업
         board=Bbs(title = title, content = content, writer = writer)
         board.save()
     return redirect('bbs_list') # render는 템플릿이기 때문에 데이터를 가져올수 없음
@@ -235,6 +245,63 @@ def bbsRemove(request):
     board.delete()
     return redirect('bbs_list')
 
+def bbsmodifyForm(request):
+    id = request.POST['id'] # id 값을 바로 받음
+    # model
+    board = Bbs.objects.get(id=id)
+    context = {'board': board,
+               'name': request.session['user_name'],
+               'id': request.session['user_id']}
+
+    return render(request, 'modify.html',context)
+
+def bbsmodify(request):
+    id = request.POST['id']
+    title = request.POST['title']
+    content = request.POST['content']
+
+    # 데이터를 가져와서 수정하는 작업
+    board = Bbs.objects.get(id=id)
+    board.title = title
+    board.content = content
+    board.save()
+
+
+    context = {'board': board,
+               'name': request.session['user_name'],
+               'id': request.session['user_id']}
+
+    return redirect('bbs_list')
+
+# ajax - json => render, redirect는 절대 쓰면 안됨
+def bbsSearch(request):
+    print('------------- ajax json bbsSearch')
+    type = request.POST['type']
+    keyword = request.POST['keyword']
+    print('type : ',type,"keyword : ", keyword)
+
+    if type == 'title' :
+        boards = Bbs.objects.filter(title__startswith=keyword)
+
+    if type == 'writer' :
+        boards = Bbs.objects.filter(writer__startswith=keyword)
+
+    print(" ajax -- result : ", boards)
+
+    data = []
+    for board in boards :
+        data.append({
+            'id'     : board.id,
+            'title'  : board.title,
+            'writer' : board.writer,
+            'regdate': board.regdate,
+            'viewcnt': board.viewcnt
+        })
+
+    return JsonResponse(data, safe=False) # 데이터가 딕셔너리? 타입이 아니여도 가능하게 해줌
+    #return HttpResponse(json.dumps(dict), content_type='application/json')
+
+# 서버쪽에 데이터 가져오려면 딕셔너리 형식으로 가져와야함 json.dumps(dict)
 
 ```
 
@@ -257,7 +324,77 @@ __templates__
 
 ```
 
-#### 
+
+
+__modify 이벤트 발생시 생각__ 
+
+* 수정할 수 있는 페이지로 이동
+
+urls -> views 게시물 id 서버로 전송  -> model ->  render (template(modify.html), context)
+
+* 수정하기 
+
+urls ->  views = id, title, content -> model(update) -> redirect('bbs_list') 업데이트 반영을 위해
+
+```html
+<!-- jquery document작업 -->
+<script>
+   $(document).ready(function() {
+      $('.btn-primary').click(function(){
+      alert(`modify btn click`)
+      })
+   });
+</script>
+```
+
+__Search Board 생성하기__
+
+```html
+<script>
+	$(document).ready(function() {
+		$('#newBtn').click(function(){
+			location.href = '../bbs_registerForm' ;
+			//window.alert('click')
+		})
+		$('#searchBtn').click(function() {
+            $('#tbody').empty() // 검색을 했을때 데이터 비우게 됨
+            // ajax 통신 - json
+            $.ajax({
+				url : "{% url 'bbs_search %}",  //템플릿 태그를 스크립트 영역에도 사용가능함 {{}} 도 가능함
+                type : "post",
+                data : {'csrfmiddlewaretoken' : '{{csrf_token}}'
+                       type : $('#searchType').val(),
+							keyword : $('#searchKeyword').val()
+							}, // data옵션은 데이터를 서버에 전송하는 옵션이다. 그리고 구문은 post 방식의 보안 역할을 한다.
+				dataType : "json" , //서버로부터 내려받을 때 데이터의 형식을 지정
+                success : function(data){ //서버가 이 함수를 호출
+                var txt = "";
+				$.each(data , function(idx, obj) { // tr 테이블 형식을 만들어줌
+					txt +="<tr><td>"+obj.id+"</td>" ;
+					txt +="<td><a href=../bbs_read/"+obj.id+">"+obj.title+"</a></td>"; //+obj.id 기본키를 연결
+					txt +="<td>"+obj.writer+"</td>";
+					txt +="<td>"+obj.regdate+"</td>";
+					txt +="<td><span class='badge bg-red'>"+obj.viewcnt+"</span></td></tr>" ;
+                    });
+            $("#tbody").append(txt);
+				}
+			})
+			
+        })
+	})
+
+</script>
+```
+
+ 
+
+
+
+
+
+-------------------------------------------
+
+
 
 #### 실습 결과
 
@@ -265,9 +402,11 @@ header와 footer.html을 제공받아 웹 사이트를 만들었다. 오늘 한 
 
 게시글을 작성하고 작성한 글을 url을 통해 연결하여 확인하는 작업
 
-마지막으로 게시글 작성자가 게시글을 삭제하는 작업을 했다.
+게시글 작성자가 게시글을 삭제하는 작업
 
+게시글 작성자가 게시글을 수정할 수 있게 만드는 작업
 
+Search Board를 통해 제목, 작성자를 입력하여 나온 게시글을 찾게 만드는 작업
 
 
 
@@ -275,11 +414,15 @@ header와 footer.html을 제공받아 웹 사이트를 만들었다. 오늘 한 
 
 
 
->2020-09-22
+>2020-09-21
 >
 >오늘 배운 내용이 완벽하게 이해된것은 아니지만 약간의 흐름이 3일째가 되는 오늘 조금씩 이해가 되는 기분이 든다.  Diango책을 통해 스스로 공부하여 html에 대해 이해하는 시간이 필요한것 같다.
 >
->2020-09-23
+>2020-09-22
 >
 >오늘은 어제 실습에 더해 추가적으로 웹을 구성하는 것을 배웠다. 확실히 하루하루 지날수록 혼자서 실습을 조금이지만 할 수 있게 되었다. 
+>
+>2020-09-23
+>
+>오늘은 코드 실수 없이 웹을 구현하였다. 'Diango 한그릇 뚝딱 '책과 강사님의 수업을 듣다보니 장고에 대한 개념이 점차 잡히는것 같다. 
 
