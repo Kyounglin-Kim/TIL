@@ -8,11 +8,13 @@
 
 게시판의 글을 몇명이 봤는지에 대한 viewcnt와 TITLE 제목에 url을 연결하여 게시판의 내용을 볼 수 있게하고 마지막으로 게시판을 쓴 작성자가 게시글이 마음에 들지 않을때 삭제 할 수 있게 만들어주는 버튼을 생성하는 하는 내용을 배웠다.
 
-
-
 자기가 쓴 게시글에 대해 수정이 가능하도록 update 모델을 만들어 사용했다.
 
 BoardList 작성해서 search Board가  가능하게 만들어주는 작업을 했다. 검색을 통해 게시판 목록을 찾을수 있게 만드는 작업을 했다. 
+
+csv -> model로 작업하는 방법
+
+django - 파일 업로드(.csv)
 
 ------------------------------------------------------------------------------
 
@@ -84,6 +86,17 @@ class Bbs(models.Model):
 
     def __str__(self):
         return self.title
+    
+# csv 불러오기 위한 작업
+class Seops(models.Model):
+    name = models.CharField(max_length=50)
+    img  = models.CharField(max_length=50)
+    status = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name+" , ",self.img+" , ",self.status
+    
+    
 ```
 
 
@@ -105,6 +118,7 @@ from .models import *  # 모델을 불러와야함
 # Register your models here.
 admin.site.register(BbsUserRegister)
 admin.site.register(Bbs)
+admin.site.register(Seops)
 ```
 
 __BbsApp.urls__
@@ -129,7 +143,8 @@ urlpatterns = [
     path('bbs_modifyForm/', views.bbsmodifyForm, name='bbs_modifyForm'),
     path('bbs_modify/', views.bbsmodify, name='bbs_modify'),
     path('bbs_search/', views.bbsSearch, name='bbs_search'),
-
+    path('csvToModel/', views.csvToModel, name = 'csvToModel'),
+    path('attachCsv/', views.csvUpload, name = 'attachCsv'),
 ]
 ```
 
@@ -303,6 +318,42 @@ def bbsSearch(request):
 
 # 서버쪽에 데이터 가져오려면 딕셔너리 형식으로 가져와야함 json.dumps(dict)
 
+# csv 읽어오기 import csv이 모듈을 가져와야함
+def csvToModel(request):
+    path = 'c:/Users/KIMKYOUNLIN/Desktop/Django/seops.csv'
+    file = open(path)
+    reader = csv.reader(file)
+    print('----' , reader)
+    list = []
+    for row in reader :
+        print(row)
+        list.append(Seops(name = row[0],
+                          img = row[1],
+                          status = row[2]))
+    Seops.objects.bulk_create(list)
+    Seops.objects.values()
+
+    return HttpResponse('create model ~~ ')
+
+
+def csvUpload(request):
+    file = request.FILES['csv_file']
+    print('----' , file)
+    if not file.name.endswith('.csv'):
+        return redirect('loginForm')
+    result_file=file.read().decode('utf-8').splitlines() # 라인으로  split
+    print('result_file',result_file)
+    reader = csv.reader(result_file)
+    list=[]
+    for row in reader :
+        print('--------------------',row)
+        list.append(Seops(name=row[0],
+                          img=row[1],
+                          status=row[2]))
+    file.close()
+    Seops.objects.bulk_create(list)
+    return redirect('loginForm') #파일 업로드 후 로그인 폼으로 전환
+
 ```
 
 __templates__ 
@@ -388,7 +439,29 @@ __Search Board 생성하기__
 
  
 
+__파일을 불러오기 위한 버튼을 생성하는 html 코딩__
 
+```html
+<div class ="box-body"></div>
+					<form method="post"
+						  action="{% url 'attachCsv'%}"
+						  enctype="multipart/form-data">
+						{% csrf_token %}
+						<div class="form-group">
+							<label>.csv 파일업로드해주세요</label>
+							<input type = "file"
+								   class = "form-control"
+								   name = "csv_file">
+						</div>
+							<button type = "submit" class ="btn btn-info">
+									등록
+							</button>
+					</form>
+				<div class = "box-footer">
+					* 파일 업로드 *
+```
+
+![실습](./img/실습6_0924.PNG)
 
 
 
